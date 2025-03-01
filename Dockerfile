@@ -1,3 +1,4 @@
+# --------------------------------------------------
 # SPRING BOOT con DOCKER - Tutorial Completo Fácil
 # https://www.youtube.com/watch?v=qcE4A81OAI0
 
@@ -14,12 +15,12 @@
 #Cons:
 #    Un poco más compleja de entender al principio.
 
-#For production, the multistage dockerfile is highly recommended.
-#La versión con multi-stage build es la mejor práctica y ofrece ventajas significativas en términos de tamaño de imagen, eficiencia y seguridad.
+# For production, the multistage dockerfile is highly recommended.
+# La versión con multi-stage build es la mejor práctica y ofrece ventajas significativas en términos de tamaño de imagen, eficiencia y seguridad.
 # --------------------------------------------------
 # https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/#create-the-dockerfile
 # 1. Create a Dockerfile
-
+# --------------------------------------------------
 # Stage 1: Build the application
 #FROM <image>
 FROM eclipse-temurin:21-jdk AS builder
@@ -35,10 +36,10 @@ COPY . .
 ## Build the application (requires Maven or Gradle)
 ## RUN <command>
 RUN ./mvnw clean package -DskipTests
-
-
-# https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/#use-multi-stage-builds
+# --------------------------------------------------
 # Stage 2: Run the application
+# https://docs.docker.com/get-started/docker-concepts/building-images/multi-stage-builds/#use-multi-stage-builds
+
 # FROM <image>
 FROM eclipse-temurin:21-jre
 
@@ -48,7 +49,7 @@ WORKDIR /app
 
 ## Copy the JAR file from the builder stage
 ## COPY <src> <dest>
-COPY --from=builder  /app/target/*.jar app.jar
+COPY --from=builder  /app/target/*.jar  app.jar
 
 ## Expose the port the app will run on
 ## EXPOSE <port> [<port>/<protocol>...]
@@ -60,22 +61,29 @@ EXPOSE 8081
 #   ENTRYPOINT ["executable", "param1", "param2"]
 ENTRYPOINT ["java", "-jar", "app.jar"]
 # --------------------------------------------------
+# --------------------------------------------------
 # pwd
 # ~/IdeaProjects/helloWorld
 
-# 2. Build the Docker Image
+# 2. Build the Docker Image - using multi-stage-builds
 # docker build -t spring-boot-docker .
+# docker build -t spring-helloworld-multi .
 
 # 3. Run the Docker Image Locally (Optional) (run the container)
     # -d  -- Run container in background and print container ID
     # -p  -- Publish a container's port(s) to the host
     # --name containerName
+    # --restart=always
 # docker run -d -p 8081:8081 --name helloWorld-container spring-boot-docker
 # docker run -d -p 8081:8081 --name helloWorld-container -e TZ="America/Argentina/Buenos_Aires" spring-boot-docker
 # docker run -d -p 8081:8081 --name helloWorld-container -e TZ="Etc/GMT+3" spring-boot-docker
+# docker run -d -p 8081:8081 --name helloWorld-container --restart=always -e TZ="Etc/GMT+3" spring-helloworld-multi
 
 # docker exec helloWorld-container date
 #   Fri Feb 28 12:58:00 AM -03 2025
 # docker exec helloWorld-container date -Iseconds;
 #   2025-02-28T01:01:06-03:00
+
+# start container automatically
+# docker update --restart=always helloWorld-container;
 # --------------------------------------------------
