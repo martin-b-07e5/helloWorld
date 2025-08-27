@@ -1,3 +1,11 @@
+# cambios agregados por un tercero
+# agregadi en trunk 
+trunk1 rechazar
+t4  aceptar
+trunk2 rechazar
+trunk3 rechazar
+t5  aceptar
+# ----------
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
